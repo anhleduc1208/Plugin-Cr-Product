@@ -40,11 +40,17 @@
                     );
                 } else {
                     // ko co ma tren kiot -> thong bao
-                    return 'Ma nay k co tren kiot, chi co tren woo, ko the cap nhat duoc';
+                    $result = array(
+                        'code' => $code,
+                        'status' => 'Ma nay k co tren kiot, chi co tren woo, ko the cap nhat duoc'
+                    );
                 }
             } else {
                 // chua co ma sp nay, di them moi
-                return 'Khong ton tai ma sp nay tren woo -> vui long cap nhat lai';
+                $result = array(
+                    'code' => $code,
+                    'status' => 'Khong ton tai ma sp nay tren woo -> vui long cap nhat lai'
+                );                
             }
             return $result;
         }

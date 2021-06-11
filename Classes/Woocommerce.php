@@ -183,26 +183,67 @@
                 return $result;
             }
         /*----------------Developing----------------------- */
-            // public function create_new_product_internal($post_data) {
-            //     $result = $this->woo->post('products',$post_data);
-            //     return $result;
-            // }
+            public function create_new_product_internal($post_data) {
+                $product = new WC_Product();
+                foreach ($post_data as $key => $val) {              
+                    $product->set_status('publish');
+                    $product->set_manage_stock(true);
+                    switch ($key) {
+                        case 'name':
+                            $product->set_name($val);
+                            break;
+                        case 'sku':
+                            $product->set_sku($val);
+                            break;
+                        case 'description':
+                            $product->set_description($val);
+                            break;
+                        case 'regular_price':
+                            $product->set_regular_price($val);
+                            break;
+                        case 'price':
+                            $product->set_price($val);
+                            break;
+                        case 'short_description':
+                            $product->set_short_description($val);
+                            break;
+                        case 'manage_stock':
+                            $product->set_manage_stock($val);
+                            break;
+                        case 'stock_quantity':
+                            $product->set_stock_quantity($val);
+                            break;
+                        default: 
+                    }                                         
+                }     
+                //$product->apply_changes();   
+                $created_id = $product->save();
+                $new_obj = new WC_Product($created_id);
+                $result = $new_obj->get_data();
 
-            // public function del_product_by_sku_internal($params) {
-            //     $arr = $this->woo->get('products',$params);
-            //     $count = count($arr);
-            //     if ($count == 1){
-            //         $id = $arr[0]->id;
-            //         $end_point = 'products/'.$id; 
-                
-            //         //echo 'xoa thanh cong';
-            //         $result = $this->woo->delete($end_point);
+                return $result;
+            }
+
+            public function del_product_by_sku_internal($params) {
+                $args = array(
+                    'post_type' => 'product', 
+                    'meta_key' => '_sku',
+                    'meta_value' => $params['sku']
+                );
+                $wcProductsArray = get_posts($args);                        
+                $count = count($wcProductsArray);
+
+                if ($count == 1){
+                    $id = $wcProductsArray[0]->ID;
+                    $product = new WC_Product($id);
                     
-            //     } else if ($count == 0 ) {
-            //         $result = 'ko co ma sp nay';
-            //     } else {
-            //         $result = 'ton tai nhiu ma sp qua';
-            //     }   
-            //     return $result;
-            // }
+                    $product->delete();                   
+                    
+                } else if ($count == 0 ) {
+                    $result = 'ko co ma sp nay';
+                } else {
+                    $result = 'Loi. ton tai nhiu ma sp qua';
+                }   
+                return $result;
+            }
     }
